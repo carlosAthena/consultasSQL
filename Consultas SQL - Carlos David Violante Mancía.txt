@@ -1,0 +1,53 @@
+UNA VEZ CREADA LAS TABLAS Y SUS REGISTROS SE TE PIDEN QUE HAGAS LAS SIGUIENTES CONSULTAS:
+
+· Obtener todos los productos de la tienda.
+SELECT * FROM producto;
+
+Obtener todos los productos cuyos precios estén entre $20 y $60.
+SELECT * FROM producto WHERE precio BETWEEN 20 AND 60;
+
+· Obtener todos los productos donde el precio sea mayor a $100.
+SELECT * FROM producto WHERE precio > 100;
+
+· Obtener todos los proveedores que comiencen con una vocal.
+SELECT * FROM proveedor WHERE nombre LIKE 'a%' OR nombre LIKE 'e%' OR nombre LIKE 'i%' OR nombre LIKE 'o%' OR nombre LIKE 'u%';
+
+· Obtener el nombre, cantidad, precio de productos ordenados de forma descendente por precio.
+SELECT nombre, cantidad, precio FROM producto ORDER BY precio DESC;
+
+· Obtener todos los datos de los productos incluyendo el nombre del proveedor.
+SELECT p.*, pr.nombre AS nombre_proveedor 
+FROM producto p 
+JOIN proveedor pr ON p.codigo_proveedor = pr.codigo;
+
+· Obtener el producto más barato de la tienda incluyendo el nombre del proveedor.
+SELECT p.*, pr.nombre AS nombre_proveedor 
+FROM producto p 
+JOIN proveedor pr ON p.codigo_proveedor = pr.codigo 
+WHERE p.precio = (SELECT MIN(precio) FROM producto);
+
+· Aplicar un descuento del 15% al producto con id=5 (obtener todos sus datos con el precio actualizado).
+UPDATE producto SET precio = precio * 0.85 WHERE codigo_producto = 5;
+SELECT * FROM producto WHERE codigo_producto = 5;
+
+· Obtener nombre, precio de los productos y agruparlos por proveedor.
+SELECT pr.nombre AS nombre_proveedor, p.nombre AS nombre_producto, p.precio 
+FROM producto p 
+JOIN proveedor pr ON p.codigo_proveedor = pr.codigo 
+GROUP BY pr.nombre, p.nombre;
+
+· Obtener la cantidad total de productos.
+SELECT SUM(cantidad) AS cantidad_total FROM producto;
+
+· Sumar todos los precios de los productos.
+SELECT SUM(precio) AS precio_total FROM producto;
+
+· Calcular el precio total de los productos por su cantidad (obtener todos los datos del producto incluyendo a los de su proveedor).
+SELECT p.*, pr.nombre AS nombre_proveedor, p.precio * p.cantidad AS precio_total 
+FROM producto p 
+JOIN proveedor pr ON p.codigo_proveedor = pr.codigo 
+WHERE p.codigo_producto IN 
+    (SELECT codigo_producto FROM producto WHERE cantidad > 0) 
+ORDER BY p.codigo_producto;
+
+
